@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-inter: 'Inter', sans-serif;
+  --font-poppins: 'Poppins', sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-inter);
+  overflow-x: hidden;
+  background: #000000;
+  color: #ffffff;
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary-500 via-primary-400 to-accent-light bg-clip-text text-transparent;
+  }
+  
+  .glow-primary {
+    box-shadow: 0 0 40px rgba(254, 77, 137, 0.6), 0 0 80px rgba(255, 107, 157, 0.3);
+  }
+  
+  .text-shadow-glow {
+    text-shadow: 0 0 20px rgba(254, 77, 137, 0.5);
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1a2e;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #fe4d89 0%, #ff8ab3 100%);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #ff6b9d 0%, #ffa1c2 100%);
+}
+
+/* Cursor effect */
+.cursor-dot {
+  width: 8px;
+  height: 8px;
+  background: #fe4d89;
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: difference;
+}
+
+.cursor-outline {
+  width: 40px;
+  height: 40px;
+  border: 2px solid rgba(254, 77, 137, 0.5);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  transition: all 0.1s ease;
+}
