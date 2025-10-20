@@ -22,7 +22,7 @@ export default function Footer() {
               { icon: Instagram, href: '#' },
               { icon: Twitter, href: '#' },
               { icon: Linkedin, href: '#' },
-              { icon: Mail, href: 'mailto:hello@baebolo.com' },
+              { icon: Mail, href: 'mailto:baebolo.dating@gmail.com' },
             ].map((social, index) => (
               <Link
                 key={index}
