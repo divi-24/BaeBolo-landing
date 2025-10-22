@@ -19,7 +19,7 @@ export default function Footer() {
           {/* Social Links */}
           <div className="flex gap-4 justify-center">
             {[
-              { icon: Instagram, href: '#' },
+              { icon: Instagram, href: 'https://www.instagram.com/baebolo.dating/' },
               { icon: Twitter, href: '#' },
               { icon: Linkedin, href: '#' },
               { icon: Mail, href: 'mailto:baebolo.dating@gmail.com' },
