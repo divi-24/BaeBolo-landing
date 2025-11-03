@@ -20,8 +20,8 @@ export default function Footer() {
           <div className="flex gap-4 justify-center">
             {[
               { icon: Instagram, href: 'https://www.instagram.com/baebolo.dating/' },
-              { icon: Twitter, href: '#' },
-              { icon: Linkedin, href: '#' },
+              { icon: Twitter, href: 'https://x.com/baebolo_dating' },
+              { icon: Linkedin, href: 'https://www.linkedin.com/company/baebolo/' },
               { icon: Mail, href: 'mailto:baebolo.dating@gmail.com' },
             ].map((social, index) => (
               <Link
