@@ -834,7 +834,7 @@ function ShareModal({ compatibility, isOpen, onClose }: { compatibility: number;
     const [copied, setCopied] = useState(false);
     const [downloading, setDownloading] = useState(false);
 
-    const shareUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/baebolo-compatibility?score=${compatibility}`;
+    const shareUrl = 'https://baebolo.netlify.app/';
 
     const getShareMessage = () => {
         if (compatibility >= 90) {
