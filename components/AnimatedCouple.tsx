@@ -1,278 +1,300 @@
 'use client';
 
-import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, PerspectiveCamera, Environment } from '@react-three/drei';
-import { useRef, useState, useEffect } from 'react';
-import * as THREE from 'three';
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Heart } from 'lucide-react';
 
-function HeartParticles() {
-  const groupRef = useRef<THREE.Group>(null);
-  const particlesRef = useRef<THREE.Mesh[]>([]);
+// Particle heart burst animation component
+function HeartBurst() {
+    const hearts = Array.from({ length: 12 }, (_, i) => i);
 
-  // Create heart shape geometry
-  const createHeartGeometry = () => {
-    const shape = new THREE.Shape();
-    const x = 0, y = 0;
-
-    shape.moveTo(x + 5, y + 5);
-    shape.bezierCurveTo(x + 5, y + 5, x + 4, y + 0, x + 0, y + 0);
-    shape.bezierCurveTo(x - 6, y + 0, x - 6, y + 7, x - 6, y + 7);
-    shape.bezierCurveTo(x - 6, y + 11, x - 3, y + 15.4, x + 5, y + 19);
-    shape.bezierCurveTo(x + 12, y + 15.4, x + 16, y + 11, x + 16, y + 7);
-    shape.bezierCurveTo(x + 16, y + 7, x + 16, y + 0, x + 10, y + 0);
-    shape.bezierCurveTo(x + 7, y + 0, x + 5, y + 5, x + 5, y + 5);
-
-    return new THREE.ShapeGeometry(shape);
-  };
-
-  const floatingHearts = 6;
-
-  if (groupRef.current && particlesRef.current.length === 0) {
-    for (let i = 0; i < floatingHearts; i++) {
-      const geometry = createHeartGeometry();
-      const material = new THREE.MeshPhongMaterial({
-        color: new THREE.Color().setHSL(0, 1, 0.6 + Math.random() * 0.2),
-        emissive: new THREE.Color().setHSL(0, 1, 0.4),
-      });
-      const mesh = new THREE.Mesh(geometry, material);
-      mesh.position.set(
-        (Math.random() - 0.5) * 15,
-        (Math.random() - 0.5) * 15,
-        (Math.random() - 0.5) * 15
-      );
-      mesh.rotation.z = Math.random() * Math.PI * 2;
-      mesh.userData.floatSpeed = 0.002 + Math.random() * 0.003;
-      mesh.userData.rotationSpeed = (Math.random() - 0.5) * 0.01;
-      mesh.userData.time = Math.random() * Math.PI * 2;
-      particlesRef.current.push(mesh);
-      groupRef.current.add(mesh);
-    }
-  }
-
-  useFrame(() => {
-    if (groupRef.current) {
-      particlesRef.current.forEach((particle) => {
-        particle.userData.time += particle.userData.floatSpeed;
-        particle.position.y += Math.sin(particle.userData.time) * 0.02;
-        particle.rotation.x += particle.userData.rotationSpeed;
-        particle.rotation.y += particle.userData.rotationSpeed * 0.8;
-      });
-    }
-  });
-
-  return <group ref={groupRef} />;
+    return (
+        <>
+            {hearts.map((i) => (
+                <motion.div
+                    key={i}
+                    initial={{
+                        x: 0,
+                        y: 0,
+                        scale: 1,
+                        opacity: 1
+                    }}
+                    animate={{
+                        x: Math.cos((i / 12) * Math.PI * 2) * 80,
+                        y: Math.sin((i / 12) * Math.PI * 2) * 80,
+                        scale: 0.1,
+                        opacity: 0
+                    }}
+                    transition={{
+                        duration: 1.2,
+                        ease: 'easeOut',
+                        delay: i * 0.05
+                    }}
+                    className="absolute w-6 h-6 text-pink-400"
+                >
+                    ❤️
+                </motion.div>
+            ))}
+        </>
+    );
 }
 
-function CoupleSilhouette() {
-  const leftFigureRef = useRef<THREE.Group>(null);
-  const rightFigureRef = useRef<THREE.Group>(null);
+// Sparkle effect
+function Sparkles() {
+    const sparkles = Array.from({ length: 20 }, (_, i) => i);
 
-  useFrame(({ clock }) => {
-    const time = clock.getElapsedTime();
-    if (leftFigureRef.current) {
-      leftFigureRef.current.position.y = Math.sin(time * 0.5) * 0.3;
-      leftFigureRef.current.rotation.z = Math.sin(time * 0.3) * 0.05;
-    }
-    if (rightFigureRef.current) {
-      rightFigureRef.current.position.y = Math.cos(time * 0.5) * 0.3;
-      rightFigureRef.current.rotation.z = Math.sin(time * 0.3 + Math.PI) * 0.05;
-    }
-  });
-
-  return (
-    <>
-      {/* Left figure */}
-      <group ref={leftFigureRef} position={[-3, 0, 0]}>
-        <mesh position={[0, 1.5, 0]}>
-          <sphereGeometry args={[0.4, 16, 16]} />
-          <meshPhongMaterial color="#fe4d89" emissive="#ff6b9d" />
-        </mesh>
-        <mesh position={[0, 0.2, 0]}>
-          <boxGeometry args={[0.5, 1, 0.3]} />
-          <meshPhongMaterial color="#d01554" emissive="#fe4d89" />
-        </mesh>
-        <mesh position={[-0.3, -0.5, 0]}>
-          <boxGeometry args={[0.3, 0.8, 0.3]} />
-          <meshPhongMaterial color="#ac1447" />
-        </mesh>
-        <mesh position={[0.3, -0.5, 0]}>
-          <boxGeometry args={[0.3, 0.8, 0.3]} />
-          <meshPhongMaterial color="#ac1447" />
-        </mesh>
-      </group>
-
-      {/* Right figure */}
-      <group ref={rightFigureRef} position={[3, 0, 0]}>
-        <mesh position={[0, 1.5, 0]}>
-          <sphereGeometry args={[0.4, 16, 16]} />
-          <meshPhongMaterial color="#ff8ab3" emissive="#ffcade" />
-        </mesh>
-        <mesh position={[0, 0.2, 0]}>
-          <boxGeometry args={[0.5, 1, 0.3]} />
-          <meshPhongMaterial color="#ffa1c2" emissive="#ffcade" />
-        </mesh>
-        <mesh position={[-0.3, -0.5, 0]}>
-          <boxGeometry args={[0.3, 0.8, 0.3]} />
-          <meshPhongMaterial color="#ffe4ed" />
-        </mesh>
-        <mesh position={[0.3, -0.5, 0]}>
-          <boxGeometry args={[0.3, 0.8, 0.3]} />
-          <meshPhongMaterial color="#ffe4ed" />
-        </mesh>
-      </group>
-    </>
-  );
+    return (
+        <>
+            {sparkles.map((i) => (
+                <motion.div
+                    key={i}
+                    initial={{
+                        x: 0,
+                        y: 0,
+                        scale: 1,
+                        opacity: 1
+                    }}
+                    animate={{
+                        x: (Math.random() - 0.5) * 120,
+                        y: (Math.random() - 0.5) * 120,
+                        scale: 0,
+                        opacity: 0
+                    }}
+                    transition={{
+                        duration: 1.5,
+                        ease: 'easeOut',
+                        delay: i * 0.03
+                    }}
+                    className="absolute w-1.5 h-1.5 bg-yellow-300 rounded-full blur-sm"
+                />
+            ))}
+        </>
+    );
 }
 
-// Loading skeleton for better UX
-function LoadingAnimation() {
-  return (
-    <div className="w-full h-full flex flex-col items-center justify-center gap-4">
-      <motion.div
-        animate={{ rotate: 360 }}
-        transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-      >
-        <Heart className="w-12 h-12 text-primary-500 fill-primary-500" />
-      </motion.div>
-      <div className="text-center">
-        <p className="text-gray-400 text-sm">Loading love animation...</p>
-        <div className="mt-3 flex gap-1 justify-center">
-          <motion.div
-            className="w-2 h-2 bg-primary-500 rounded-full"
-            animate={{ scale: [1, 1.2, 1] }}
-            transition={{ duration: 0.6, repeat: Infinity }}
-          />
-          <motion.div
-            className="w-2 h-2 bg-primary-500 rounded-full"
-            animate={{ scale: [1, 1.2, 1] }}
-            transition={{ duration: 0.6, repeat: Infinity, delay: 0.2 }}
-          />
-          <motion.div
-            className="w-2 h-2 bg-primary-500 rounded-full"
-            animate={{ scale: [1, 1.2, 1] }}
-            transition={{ duration: 0.6, repeat: Infinity, delay: 0.4 }}
-          />
+// Main expandable circle with heart
+function ExpandingHeartCircle({ isAnimating }: { isAnimating: boolean }) {
+    return (
+        <div className="relative w-32 h-32 mx-auto">
+            {/* Outer pulsing ring */}
+            <motion.div
+                animate={isAnimating ? {
+                    scale: [1, 1.3, 1.1],
+                    opacity: [1, 0.8, 0.3]
+                } : {
+                    scale: 1,
+                    opacity: 1
+                }}
+                transition={isAnimating ? {
+                    duration: 1.2,
+                    ease: 'easeOut',
+                    times: [0, 0.5, 1]
+                } : {
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: 'easeInOut'
+                }}
+                className="absolute inset-0 rounded-full border-2 border-primary-500/50"
+            />
+
+            {/* Middle pulsing ring */}
+            <motion.div
+                animate={isAnimating ? {
+                    scale: [1, 1.2, 1],
+                    opacity: [0.8, 0.4, 0]
+                } : {
+                    scale: 1,
+                    opacity: 0.5
+                }}
+                transition={isAnimating ? {
+                    duration: 1.2,
+                    ease: 'easeOut',
+                    times: [0, 0.5, 1],
+                    delay: 0.1
+                } : {
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                    delay: 0.2
+                }}
+                className="absolute inset-2 rounded-full border-2 border-accent-light/40"
+            />
+
+            {/* Inner circle with heart */}
+            <motion.div
+                animate={isAnimating ? {
+                    scale: [1, 1.15, 1],
+                } : {
+                    scale: [1, 1.08, 1]
+                }}
+                transition={isAnimating ? {
+                    duration: 0.8,
+                    ease: 'easeOut'
+                } : {
+                    duration: 1.5,
+                    repeat: Infinity,
+                    ease: 'easeInOut'
+                }}
+                className="absolute inset-0 rounded-full bg-gradient-to-br from-primary-500/30 to-accent-light/20 flex items-center justify-center border-2 border-primary-500/80 shadow-lg shadow-primary-500/50"
+            >
+                <motion.div
+                    animate={isAnimating ? {
+                        scale: [1, 1.2, 0.8],
+                        rotate: [0, 10, -10, 0]
+                    } : {
+                        scale: [1, 1.05, 1],
+                        rotate: 0
+                    }}
+                    transition={isAnimating ? {
+                        duration: 0.9,
+                        ease: 'easeOut'
+                    } : {
+                        duration: 1.5,
+                        repeat: Infinity,
+                        ease: 'easeInOut'
+                    }}
+                >
+                    <Heart className="w-16 h-16 text-primary-500 fill-primary-500 drop-shadow-lg" />
+                </motion.div>
+            </motion.div>
+
+            {/* Glow effect */}
+            <motion.div
+                animate={isAnimating ? {
+                    opacity: [0, 1, 0.5, 0],
+                    scale: [0.8, 1.2, 1.1, 0.9]
+                } : {
+                    opacity: 0.5
+                }}
+                transition={isAnimating ? {
+                    duration: 1.2,
+                    ease: 'easeOut'
+                } : {
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: 'easeInOut'
+                }}
+                className="absolute inset-0 rounded-full bg-gradient-to-r from-primary-500 via-accent-light to-primary-500 blur-xl opacity-50"
+            />
+
+            {/* Burst particles */}
+            {isAnimating && (
+                <>
+                    <div className="absolute inset-0">
+                        <HeartBurst />
+                    </div>
+                    <div className="absolute inset-0">
+                        <Sparkles />
+                    </div>
+                </>
+            )}
         </div>
-      </div>
-    </div>
-  );
+    );
 }
 
 interface AnimatedCoupleProps {
-  enableOnMobile?: boolean;
+    compatibility?: number;
+    enableOnMobile?: boolean;
 }
 
-export default function AnimatedCouple({ enableOnMobile = false }: AnimatedCoupleProps) {
-  const [mounted, setMounted] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const [hasWebGL, setHasWebGL] = useState(true);
+export default function AnimatedCouple({ compatibility = 85, enableOnMobile = false }: AnimatedCoupleProps) {
+    const [mounted, setMounted] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+    const [animate, setAnimate] = useState(false);
+    const animationTriggeredRef = useRef(false);
 
-  useEffect(() => {
-    setMounted(true);
-    // Check if device is mobile
-    setIsMobile(window.innerWidth < 768);
+    useEffect(() => {
+        setMounted(true);
+        setIsMobile(window.innerWidth < 768);
 
-    // Check WebGL support
-    try {
-      const canvas = document.createElement('canvas');
-      const gl = canvas.getContext('webgl') || canvas.getContext('webgl2');
-      setHasWebGL(!!gl);
-    } catch (e) {
-      setHasWebGL(false);
+        // Trigger animation on mount
+        const timer = setTimeout(() => {
+            setAnimate(true);
+            animationTriggeredRef.current = true;
+        }, 300);
+
+        return () => clearTimeout(timer);
+    }, []);
+
+    // Re-trigger animation every 4 seconds
+    useEffect(() => {
+        if (!mounted) return;
+
+        const interval = setInterval(() => {
+            setAnimate(false);
+            setTimeout(() => setAnimate(true), 100);
+        }, 4000);
+
+        return () => clearInterval(interval);
+    }, [mounted]);
+
+    if (!mounted) {
+        return null;
     }
-  }, []);
 
-  // Fallback for mobile or no WebGL support
-  if (!mounted || (!hasWebGL) || (isMobile && !enableOnMobile)) {
     return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="relative w-full h-96 md:h-96 rounded-3xl overflow-hidden bg-gradient-to-br from-black via-primary-950 to-black border border-white/10 flex items-center justify-center"
-      >
-        {/* Animated gradient background */}
-        <div className="absolute inset-0">
-          <div className="absolute top-0 left-1/4 w-32 h-32 bg-primary-500 rounded-full mix-blend-screen filter blur-2xl opacity-30 animate-pulse" />
-          <div className="absolute bottom-0 right-1/4 w-32 h-32 bg-accent-light rounded-full mix-blend-screen filter blur-2xl opacity-30 animate-pulse" />
-        </div>
+        <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, type: 'spring', stiffness: 100 }}
+            className="relative w-full px-4 py-8 sm:py-12"
+        >
+            <div className="bg-gradient-to-br from-primary-900/20 via-transparent to-accent-light/10 rounded-3xl p-8 sm:p-12 border border-primary-500/20 backdrop-blur-sm overflow-hidden">
 
-        {/* Content */}
-        <div className="relative z-10 text-center px-6">
-          <motion.div
-            animate={{ scale: [1, 1.1, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="mb-6 flex justify-center"
-          >
-            <div className="relative">
-              <Heart className="w-16 h-16 text-primary-500 fill-primary-500" />
-              <motion.div
-                animate={{ scale: [0.5, 1.2, 0.5] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-                className="absolute inset-0 rounded-full border-2 border-primary-500"
-              />
+                {/* Background gradient */}
+                <div className="absolute inset-0 pointer-events-none">
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary-500/10 rounded-full blur-3xl" />
+                    <div className="absolute top-1/4 right-1/4 w-40 h-40 bg-accent-light/5 rounded-full blur-2xl" />
+                </div>
+
+                {/* Main content */}
+                <div className="relative z-10 text-center">
+                    {/* Heart burst animation */}
+                    <motion.div
+                        className="mb-8 sm:mb-12 flex justify-center"
+                        initial={{ scale: 0 }}
+                        whileInView={{ scale: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.2, type: 'spring', stiffness: 120 }}
+                    >
+                        <ExpandingHeartCircle isAnimating={animate} />
+                    </motion.div>
+
+                    {/* Text content */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.4 }}
+                    >
+                        <h3 className="text-2xl sm:text-3xl md:text-4xl font-black bg-gradient-to-r from-primary-400 via-pink-400 to-accent-light bg-clip-text text-transparent mb-3">
+                            Love in the Air ✨
+                        </h3>
+                        <p className="text-sm sm:text-base text-gray-300 max-w-md mx-auto leading-relaxed px-2">
+                            When two hearts beat as one, magic happens. Get ready to find your perfect match!
+                        </p>
+                    </motion.div>
+
+                    {/* Floating hearts decoration */}
+                    <div className="mt-8 flex justify-center gap-4 flex-wrap">
+                        {[0, 1, 2].map((i) => (
+                            <motion.div
+                                key={i}
+                                animate={{ y: [0, -10, 0] }}
+                                transition={{
+                                    duration: 2 + i * 0.3,
+                                    repeat: Infinity,
+                                    ease: 'easeInOut'
+                                }}
+                                className="text-2xl sm:text-3xl"
+                            >
+                                {i === 0 ? '💕' : i === 1 ? '❤️' : '💗'}
+                            </motion.div>
+                        ))}
+                    </div>
+                </div>
             </div>
-          </motion.div>
-          <h3 className="text-xl md:text-2xl font-semibold text-white mb-2">
-            Two Hearts, One Connection
-          </h3>
-          <p className="text-gray-400 text-sm">
-            {isMobile && !enableOnMobile
-              ? 'Experience the full animation on desktop'
-              : 'Finding your perfect match...'}
-          </p>
-        </div>
-
-        {/* Glow effect overlay */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-primary-500/10" />
-        </div>
-      </motion.div>
+        </motion.div>
     );
-  }
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6 }}
-      className="relative w-full h-80 md:h-96 rounded-3xl overflow-hidden bg-gradient-to-br from-black via-primary-950 to-black border border-white/10"
-    >
-      <Canvas
-        camera={{ position: [0, 0, 12], fov: 45 }}
-        style={{ width: '100%', height: '100%' }}
-        dpr={isMobile ? 1 : window.devicePixelRatio}
-      >
-        <PerspectiveCamera makeDefault position={[0, 0, 12]} fov={45} />
-        <color attach="background" args={['#000000']} />
-
-        {/* Lighting */}
-        <pointLight position={[10, 10, 10]} intensity={1} color="#ff6b9d" />
-        <pointLight position={[-10, -10, 10]} intensity={0.5} color="#ff8ab3" />
-        <ambientLight intensity={0.3} />
-
-        {/* Objects */}
-        <CoupleSilhouette />
-        <HeartParticles />
-
-        {/* Environment */}
-        <Environment preset="night" />
-        <OrbitControls
-          autoRotate
-          autoRotateSpeed={2}
-          enableZoom={false}
-          enablePan={false}
-          enableRotate={false}
-        />
-      </Canvas>
-
-      {/* Glow effect overlay */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-primary-500/10" />
-      </div>
-    </motion.div>
-  );
 }
