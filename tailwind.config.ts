@@ -38,6 +38,10 @@ const config: Config = {
         'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'bounce-slow': 'bounce 3s infinite',
         'glow': 'glow 2s ease-in-out infinite alternate',
+        'heartbeat': 'heartbeat 1.3s ease-in-out infinite',
+        'flame-flicker': 'flame-flicker 0.5s ease-in-out infinite',
+        'shimmer': 'shimmer 2s infinite',
+        'float-up': 'float-up 3s ease-in infinite',
       },
       keyframes: {
         float: {
@@ -47,6 +51,26 @@ const config: Config = {
         glow: {
           '0%': { boxShadow: '0 0 20px rgba(254, 60, 114, 0.5)' },
           '100%': { boxShadow: '0 0 40px rgba(254, 60, 114, 1)' },
+        },
+        heartbeat: {
+          '0%, 100%': { transform: 'scale(1)' },
+          '14%': { transform: 'scale(1.1)' },
+          '28%': { transform: 'scale(1)' },
+          '42%': { transform: 'scale(1.1)' },
+        },
+        'flame-flicker': {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.7' },
+        },
+        shimmer: {
+          '0%': { backgroundPosition: '-1000px 0' },
+          '100%': { backgroundPosition: '1000px 0' },
+        },
+        'float-up': {
+          '0%': { transform: 'translateY(100vh) rotateZ(0deg)', opacity: '0' },
+          '10%': { opacity: '1' },
+          '90%': { opacity: '1' },
+          '100%': { transform: 'translateY(-100vh) rotateZ(360deg)', opacity: '0' },
         },
       },
     },

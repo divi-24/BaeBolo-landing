@@ -7,6 +7,8 @@ import Hero from '@/components/Hero';
 import WhatIsBaeBolo from '@/components/WhatIsBaeBolo';
 import Features from '@/components/Features';
 import HowItWorks from '@/components/HowItWorks';
+import LoveStory from '@/components/LoveStory';
+import CompatibilityChecker from '@/components/CompatibilityChecker';
 import WaitlistSection from '@/components/WaitlistSection';
 import Footer from '@/components/Footer';
 import SplashScreen from '@/components/SplashScreen';
@@ -41,6 +43,8 @@ export default function Home() {
         <Hero />
         <WhatIsBaeBolo />
         <Features />
+        <LoveStory />
+        <CompatibilityChecker />
         <HowItWorks />
         <WaitlistSection />
         <Footer />
