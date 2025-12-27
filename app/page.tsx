@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Navigation from '@/components/Navigation';
 import Hero from '@/components/Hero';
 import WhatIsBaeBolo from '@/components/WhatIsBaeBolo';
 import Features from '@/components/Features';
@@ -39,12 +40,17 @@ export default function Home() {
     <>
       {showSplash && <SplashScreen onFinish={() => setShowSplash(false)} duration={3000} />}
       {!showSplash && <ScrollProgress />}
+      {!showSplash && <Navigation />}
       <main ref={mainRef} className="relative bg-black">
         <Hero />
-        <WhatIsBaeBolo />
-        <Features />
         <LoveStory />
-        <CompatibilityChecker />
+        <div id="compatibility-checker">
+          <CompatibilityChecker />
+        </div>
+        <div id="what-is-baebolo">
+          <WhatIsBaeBolo />
+        </div>
+        <Features />
         <HowItWorks />
         <WaitlistSection />
         <Footer />
